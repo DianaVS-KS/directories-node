@@ -8,7 +8,6 @@ if(process.argv[2] != undefined){
     // Fixing if the dir has a space
     directoryPath = args.join(" ").toString();
 }
-console.log(directoryPath)
 
 try{
     if(fs.existsSync(directoryPath)){
