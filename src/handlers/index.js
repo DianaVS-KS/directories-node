@@ -16,18 +16,17 @@ const books = (req, res) => {
     }
     if(req.method === 'POST'){
         let addBook = '';
-        res.on('data', (newData) => {
+        req.on('data', newData => {
             addBook += newData;            
         })
-        res.on('end', () => {
+        req.on('end', () => {
             res.writeHead(201, {'Content-Type': 'text/plain'});
-            fs.writeFileSync('./src/public/books.txt', `${addBook},\n`, {flag: 'a', encoding: 'utf-8'}, (err) => {
+            fs.writeFile('./src/public/books.txt', `${addBook},\n`, {flag: 'a', encoding: 'utf-8'}, (err) => {
                 if (err) return console.log(err);
                 console.log('Book added');
             });
         });
-        console.log(addBook)
-        res.write(`Recently added: \n ${addBook}`);
+        res.write('You added a new book! :D');
     }
     if(req.method === 'DELETE'){
         res.writeHead(202, { 'Content-Type': 'text/plain'});
