@@ -10,23 +10,24 @@ const home = (req, res) => {
 
 const books = (req, res) => {
     if(req.method === 'GET'){
-        res.writeHead(200, { 'Content-Type': 'application/json'});
+        res.writeHead(200, {'Content-Type': 'application/json'});
         const txt = fs.readFileSync('./src/public/books.txt', 'utf-8');  
         res.write(txt);
     }
     if(req.method === 'POST'){
         let addBook = '';
-        res.on('data', data => {
-            addBook += data;            
-        });
+        res.on('data', (newData) => {
+            addBook += newData;            
+        })
         res.on('end', () => {
-            res.writeHead(201, { 'Content-Type': 'text/plain'});
-            fs.writeFile('./src/public/books.txt', `${addBook}, \n`, {flag: 'a', encoding: 'utf-8'}, (err) => {
+            res.writeHead(201, {'Content-Type': 'text/plain'});
+            fs.writeFileSync('./src/public/books.txt', `${addBook},\n`, {flag: 'a', encoding: 'utf-8'}, (err) => {
                 if (err) return console.log(err);
                 console.log('Book added');
-            })
-            res.write(`Recently added: \n ${addBook}`)
+            });
         });
+        console.log(addBook)
+        res.write(`Recently added: \n ${addBook}`);
     }
     if(req.method === 'DELETE'){
         res.writeHead(202, { 'Content-Type': 'text/plain'});
@@ -41,9 +42,9 @@ const books = (req, res) => {
 const viewer = (req, res) => {
     try{
         res.writeHead(200, { 'Content-Type': 'text/plain'});
-        const url = new URL(`${req.headers.host}${req.url}`);
+        const url = new URL(`http://${req.headers.host}${req.url}`);
         const params = url.searchParams.get('file');
-        const searchedFile = fs.readFileSync(`./src/public/fileDirectory/${params}`, 'utf-8');
+        const searchedFile = fs.readFileSync(`./src/public/fileDirectory/${params}.txt`, 'utf-8');
         res.write(searchedFile);
         res.end();
     }

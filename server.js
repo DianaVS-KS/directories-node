@@ -17,7 +17,7 @@ const router = (path) => {
 };
 
 const server = http.createServer((req, res) => {
-    const route = router(req.url)
+    const route = router(req.url.split('?')[0])
     return route(req, res);
 });
 
